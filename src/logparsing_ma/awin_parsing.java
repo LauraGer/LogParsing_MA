@@ -15,7 +15,6 @@ class awin_parsing {
     
        public static void openAwin() throws IOException {
             
-           PrintWriter output     =   new PrintWriter("/Volumes/HD/X/LOGS/FINAL_awin.csv");
            
                 String  replacedTxt  =   logparsing_methods.readFile("/Volumes/HD/htdocs/GitHub/log_stuff/log_awin.txt")
                                             .replaceAll(" ", "")
@@ -31,7 +30,6 @@ class awin_parsing {
         try (BufferedReader awin = new BufferedReader(new FileReader("/Volumes/HD/X/LOGS/awin_edit.csv")))
         {
                 String sCurrentLine;
-                    
                 while ((sCurrentLine = awin.readLine()) != null) {
  
                     String[] parts          =   sCurrentLine.split("','");
