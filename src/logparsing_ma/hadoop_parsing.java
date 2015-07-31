@@ -55,7 +55,6 @@ class hadoop_parsing {
                                                             .replace( ", [WTermFilter (Field", ";")
                                                                 .replace(  ")(Version 7)(Values [", " : ")
                                                     ;
-                            range_filter    =   range_filter+";";
                             
                         }
                         else 
@@ -67,7 +66,7 @@ class hadoop_parsing {
                                                             .replace( ")(IncludeUpper false)]", "");
                             
                         } 
-                    
+//                    HIER IST IRGENDWO NOCH EIN PROBLEM....WEIL MANCHMAL BEIM GROUP NOCH EIN TERMFILTER VORHANDEN IST!!!!!
                    
                     term_filter =   logparsing_methods.getSubString( sCurrentLine, "[WTermFilter", ")]" ) ;
                             
@@ -94,8 +93,8 @@ class hadoop_parsing {
                     
 // 				System.out.println(values);								
                     
-//                    System.out.println("'HADOOP';"+timestamp+";"+range_filter+";"+term_filter+";"+group+";"+sorting+";'"+values+"'");
-                    input   =   "'HADOOP';"+timestamp+";"+range_filter+";"+term_filter+";"+group+";"+sorting+";'"+values+"'";
+//                    System.out.println("  GROUP"+term_filter);
+                    input   =   "'HADOOP';"+timestamp+";"+range_filter+";"+term_filter+""+group+";"+sorting+";'"+values+"'";
                     
                     output.println(input);
                     
