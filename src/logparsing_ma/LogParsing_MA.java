@@ -22,9 +22,9 @@ public class LogParsing_MA {
         try {
             // TODO code application logic here
             
-//            hadoop_parsing.openHadoop();
+            hadoop_parsing.openHadoop();
 //
-//            awin_parsing.openAwin();
+            awin_parsing.openAwin();
             
             cube_parsing.openCube();
             

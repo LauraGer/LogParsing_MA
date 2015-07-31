@@ -15,8 +15,10 @@ class awin_parsing {
     
        public static void openAwin() throws IOException {
             
+           PrintWriter  output      =   new PrintWriter("/Volumes/HD/X/LOGS/FINAL_awin.csv");
            
                 String  replacedTxt  =   logparsing_methods.readFile("/Volumes/HD/htdocs/GitHub/log_stuff/log_awin.txt")
+
                                             .replaceAll(" ", "")
                                                 .replaceAll("[\\n\\r]", "")
                                                     .replaceAll("\"", "'")
@@ -26,10 +28,13 @@ class awin_parsing {
 
                 logparsing_methods.writeFile("/Volumes/HD/X/LOGS/awin_edit.csv", replacedTxt);
                 
-
+            output.println("'System';TimeStamp;RangeFilterFrom;RangeFilterTo;TermFilter;Group;Sorting;Order;Values");
+            
+           
         try (BufferedReader awin = new BufferedReader(new FileReader("/Volumes/HD/X/LOGS/awin_edit.csv")))
         {
                 String sCurrentLine;
+
                 while ((sCurrentLine = awin.readLine()) != null) {
  
                     String[] parts          =   sCurrentLine.split("','");
@@ -50,13 +55,18 @@ class awin_parsing {
                         
                     input       =   ("'AWIN';"+timestamp+";"+range_filter_f+";"+range_filter_t+";"+term_filter+";"+group+";"+sorting+";'"+values+"'");
                     
+                    
+                    if(parts[0].matches("54\\d{5}|[0-9]{7}'"))
+                    {
                     output.println(input);
 //                    System.out.println(input);
 //                    System.out.println(Arrays.toString(parts));
+                    }
                 }
 
         } catch (IOException e) {
         } 
         output.close();
+        System.out.println("AWIN done!");
     }
 }
