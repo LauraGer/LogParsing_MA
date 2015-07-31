@@ -26,7 +26,12 @@ class cube_parsing {
                     
                     String  edit;    
                             
+                            edit    =	sCurrentLine.replace( ",,,", ";\"\";")
+                                            .replace( ",,,", ";\";\";")
+						.replace( "\",\"", "\";\"")
+                                                    .replace( ",", "\";\"");
                     
+                    String[] parts          =   edit.split("\";\"");
                     
                     String  timestamp       =   parts[1]
                         ,   range_filter_f  =   parts[2]
@@ -37,6 +42,13 @@ class cube_parsing {
                         ,   values          =   parts[8]
                         ,   input
                         ;
+//                   
+                    if((range_filter_f.length()==0)   ) {
+                         term_filter  = "CHECK";
+//                        if(term_filter.matches("[0-9]{9}"))
+//                        {
+//                            term_filter  = "CHECK";
+//                        }
                     }
 ////                    
                     input       =   ("'CUBE';"+timestamp+";"+range_filter_f+";"+range_filter_t+";"+term_filter+";"+group+";"+sorting+";'"+values+"'");
