@@ -18,12 +18,12 @@ import static logparsing_ma.hadoop_parsing.PATTERNS;
 class cube_parsing {
     
     static String[]     REGEXS      = new String[] {    /*"\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[time\\].\\[Day Name\\].+(\\d{5}|[0-9]{10}).+\\[time\\].\\[Day Name\\].+(\\d+).+"
-                                                    ,*/   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[partner\\].(\\[partner\\].\\[Url\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\[Day Name\\].+\\[(\\d+)\\].+"
+                                                    ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[partner\\].(\\[partner\\].\\[Url\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\[Day Name\\].+\\[(\\d+)\\].+"
                                                     ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+(\\[program\\].\\[name\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\[Day Name\\].+\\[(\\d+)\\].+"
-                                                    ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[program\\].\\[program\\].+(\\[Prog Name\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\[Day Name\\].+\\[(\\d+)\\].+"        
-                                                    ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[affiliation\\].\\[affiliation_admedia\\].+\\[admedia key\\].+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\[Day Name\\].+\\[(\\d+)\\].+"        
-                                                    ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[Day Name\\].+\\[(\\d+)\\].+\\[Day Name\\].+\\[(\\d+)\\].+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+"};//\",\"(\\d+).+\\[Measures\\].(.+).*"};//.\\[User Name\\].&\\[(.\\d+)\\].*"};
-//    "|\\\\[Day Name\\\\]"[affiliation].[affiliation_admedia].[admedia key]
+                                                    ,  "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[program\\].\\[program\\].+(\\[Prog Name\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\[Day Name\\].+\\[(\\d+)\\].+"        
+                                                    , */   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[affiliation\\].\\[affiliation_admedia\\].+(\\[admedia key\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\[partner\\].\\[Url\\].+(\\[\\d+\\]).+"//(\\[Prog Name\\]).+\\[(\\d+)\\].+\\[Day Name\\].+\\[(\\d+)\\].+"
+                                                    /*,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[Day Name\\].+\\[(\\d+)\\].+\\[Day Name\\].+\\[(\\d+)\\].+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+"};//\",\"(\\d+).+\\[Measures\\].(.+).*"};//.\\[User Name\\].&\\[(.\\d+)\\].*"*/};
+// [partner].[partner].[Url].&[2077202]},  {[program].[program].[Prog Name].&[14936]},  {[time].[Day Name].&[20150724]}
     static Pattern[]    PATTERNS    = new Pattern[REGEXS.length];
 
     static {
@@ -75,35 +75,51 @@ class cube_parsing {
 //                            else{
                                 
 //                            }
-                                
+                                System.out.println(matcher.group(2));
                             if(matcher.group(2).matches("\\d+")) {  
-                                range_filter_f  =   matcher.group(2);//+";"+matcher.group(3);
-                                range_filter_t  =   matcher.group(3); 
-                                term_filter     =   matcher.group(4);
-                                group           =   "";//matcher.group(5);
-                                sorting         =   "";//matcher.group(6);
-                                order           =   "";//matcher.group(7);
-                                values          =   matcher.group(5);
-                            }
-                            else{
-                                range_filter_f  = matcher.group(5);
-                                range_filter_t  = "";
-                                term_filter     =   matcher.group(3);
+                                range_filter_f  =   matcher.group(3);//+";"+matcher.group(3);
+                                range_filter_t  =   matcher.group(4); 
+                                term_filter     =   matcher.group(5);
                                 group           =   matcher.group(2);
                                 sorting         =   "";//matcher.group(6);
                                 order           =   "";//matcher.group(7);
                                 values          =   matcher.group(4);
                             }
+                            else{   
+                                    
+                                if(matcher.group(2).matches("[admedia key]")) { 
+                                    System.out.println("XXXX");
+                                    range_filter_f  = matcher.group(7);
+                                    range_filter_t  = "";
+                                    term_filter     =   matcher.group(3)+", "+matcher.group(5)+", "+matcher.group(6);;
+                                    group           =   matcher.group(2);
+                                    sorting         =   "";//matcher.group(6);
+                                    order           =   "";//matcher.group(7);
+                                    values          =   matcher.group(4);
+
+                                }
+                                else{
+                                    System.out.println("YYYY");
+                                    range_filter_f  =   matcher.group(5);
+                                    range_filter_t  =   "";
+                                    term_filter     =   matcher.group(3);
+                                    group           =   matcher.group(2);
+                                    sorting         =   "";//matcher.group(6);
+                                    order           =   "";//matcher.group(7);
+                                    values          =   matcher.group(4);
+                                    }
+                                
+                            }
 //                            
                             
                                 input   =   "CUBE;"+timestamp+";"+range_filter_f+";"+range_filter_t+";"+term_filter+";"+group+";"+sorting+";"+order+";'"+values+"'";
                             
-                            System.out.println(input);
+//                            System.out.println(input);
                             output.println(input); 
                             
                         }
                         else{
-                            System.out.println(INPUT_STRING);
+//                            System.out.println(INPUT_STRING);
 //                             output.println(INPUT_STRING);
                         }
                     
