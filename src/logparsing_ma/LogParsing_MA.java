@@ -24,9 +24,9 @@ public class LogParsing_MA {
             
 //            hadoop_parsing.openHadoop();
 //
-//            awin_parsing.openAwin();
+            awin_parsing.openAwin();
             
-            cube_parsing.openCube();
+//            cube_parsing.openCube();
             
             
             
