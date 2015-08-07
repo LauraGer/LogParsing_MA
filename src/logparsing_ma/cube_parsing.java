@@ -19,18 +19,9 @@ class cube_parsing {
     
     static String       FILE        =   "/Volumes/HD/htdocs/GitHub/log_stuff/log_cube.csv";
     
-    static String[]     REGEXS      =   new String[] {  "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[Day Name\\].+([0-9]{8}).+\\[Day Name\\].+([0-9]{8}).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+"
-                                                    ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[partner\\].(\\[partner\\].\\[Url\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\{\\[time\\].\\[Day Name\\].+\\[[0-9]{8}\\].+\\[time\\].\\[Day Name\\].+\\[[0-9]{8}\\]\\}.+"
-                                                    ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+(\\[program\\].\\[name\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\{\\[time\\].\\[Day Name\\].+\\[[0-9]{8}\\].+\\[time\\].\\[Day Name\\].+\\[[0-9]{8}\\]\\}.+"
-                                                    ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[program\\].\\[program\\].+(\\[Prog Name\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\{\\[time\\].\\[Day Name\\].+\\[([0-9]{8})\\].+\\[time\\].\\[Day Name\\].+\\[([0-9]{8})\\]\\}.+"
-                                                    ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[program\\].\\[program\\].+(\\[Prog Name\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\{\\[time\\].\\[Day Name\\].+\\[([0-9]{8})\\]\\}.+"
-                                                    ,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[affiliation\\].\\[affiliation_admedia\\].+(\\[admedia key\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+(\\[Prog Name\\]).+\\[(\\d+)\\].+\\{\\[time\\].\\[Day Name\\].+\\[[0-9]{8}\\].+\\[time\\].\\[Day Name\\].+\\[[0-9]{8}\\]\\}.+" //.+\\[partner\\].\\[Url\\].+(\\[\\d+\\]).+"(\\[Prog Name\\]).+\\[(\\d+)\\].+
-//                                                     , "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[affiliation\\].\\[affiliation_admedia\\].+(\\[admedia key\\]).+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+\\{\\[time\\].\\[Day Name\\].+\\[(\\d+)\\].+\\[time\\].\\[Day Name\\].+\\[(\\d+)\\]\\}.+" //.+\\[partner\\].\\[Url\\].+(\\[\\d+\\]).+"(\\[Prog Name\\]).+\\[(\\d+)\\].+
-                                                    /*,   "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\[Day Name\\].+\\[(\\d+)\\].+\\[Day Name\\].+\\[(\\d+)\\].+\"(\\d+)\".+\"L-JBOSS-.+WITH MEMBER.+\\[Measures\\].(\\[.+\\]).+"};//\",\"(\\d+).+\\[Measures\\].(.+).*"};//.\\[User Name\\].&\\[(.\\d+)\\].*"*/};
-// [partner].[partner].[Url].&[2077202]},  {[program].[program].[Prog Name].&[14936]},  {[time].[Day Name].&[20150724]}
-//     (  [partner].[User Name].&[1585390],  {[time].[Day Name].&[20150724]},  {} )
-    
-    static Pattern[]    PATTERNS    = new Pattern[REGEXS.length];
+    static String[]     REGEXS      =   new String[] {  "\"CUBE\",\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3})\".+\"(.+)\",\"(\\d+)\".+\"L-JBOSS-.+SELECT \\{(.+)\\} ON.+EMPTY \\{ \\{(.+)\\} \\}.+WHERE \\( (.+) \\) \",\".+\""};
+        
+    static Pattern[]    PATTERNS    =   new Pattern[REGEXS.length];
  
     static {
             for (int i = 0; i < REGEXS.length; i++){
@@ -53,7 +44,7 @@ class cube_parsing {
             {
                 String sCurrentLine
                     ,   timestamp      
-                    ,   range_filter_f 
+                    ,   range_filter
                     ,   range_filter_t 
                     ,   term_filter    
                     ,   group          
@@ -74,94 +65,57 @@ class cube_parsing {
                 while ((sCurrentLine = cube.readLine()) != null) {
                    
                     i   =   i+1;    //LINE ZÄHLER
-                    x   =   0;      //DAMIT DIE NICHT REGEX LINIEN NUR EINMAL GESCHRIEBEN WERDEN
                     
                     System.out.println(i+" von "+countLines);
+                    
                     for (Pattern pattern : PATTERNS) {
                        
                         Matcher matcher = pattern.matcher(sCurrentLine);
 //                        System.out.println(matcher.matches());
                         if (matcher.matches()){
                             
-                            timestamp   =   matcher.group(1);
                             check       =   i;
                             
-                            if(matcher.group(2).matches("\\d+")) {  
+                            timestamp       =   matcher.group(1);  
+                            if(matcher.group(2).matches(".*\\[time\\]\\.\\[Day Name\\]\\.&\\[\\d+\\] : \\[time\\]\\.\\[Day Name\\]\\.&\\[\\d+\\]:*")) {  
+                                range_filter  =   matcher.group(2).replaceAll(".*\\[time\\]\\.\\[Day Name\\]\\.&\\[(\\d+)\\] : \\[time\\]\\.\\[Day Name\\]\\.&\\[(\\d+)\\].*","$1 ; $2");//+";"+matcher.group(3);
+                            }
+                            else if(matcher.group(2).matches(".*\\[time\\]\\.\\[Month Name\\]\\.&\\[\\d+\\] : \\[time\\]\\.\\[Month Name\\]\\.&\\[\\d+\\]:*")) {  
+                                range_filter  =   matcher.group(2).replaceAll(".*\\[time\\]\\.\\[Month Name\\]\\.&\\[(\\d+)\\] : \\[time\\]\\.\\[Month Name\\]\\.&\\[(\\d+)\\].*","$1 ; $2");//+";"+matcher.group(3);
+                            }
+                            else if(matcher.group(6).matches(".*\\{\\[time\\]\\.\\[Day Name\\]\\.&\\[\\d+\\]\\}.*")){
+                                range_filter    =   matcher.group(6).replaceAll(".*\\{\\[time\\]\\.\\[Day Name\\]\\.&\\[(\\d+)\\]\\}","$1 ;");
+                            }
+                            else if(matcher.group(6).matches(".*\\{\\[time\\]\\.\\[Month Name\\]\\.&\\[\\d+\\]\\}.*")){
+                                range_filter    =   matcher.group(6).replaceAll(".*\\{\\[time\\]\\.\\[Month Name\\]\\.&\\[(\\d+)\\]\\}","$1 ;");
+                            }
+                            else if(matcher.group(6).matches(".*\\{\\[time\\]\\.\\[Day Name\\]\\.&\\[\\d+\\] : \\[time\\]\\.\\[Day Name\\]\\.&\\[\\d+\\]\\}.*")) {  
+                                range_filter  =   matcher.group(6).replaceAll(".*\\{\\[time\\]\\.\\[Day Name\\]\\.&\\[(\\d+)\\] : \\[time\\]\\.\\[Day Name\\]\\.&\\[(\\d+)\\]\\}.*","$1 ; $2 ");//+";"+matcher.group(3);
+                            }
+                            else if(matcher.group(6).matches(".*\\{\\[time\\]\\.\\[Month Name\\]\\.&\\[\\d+\\] : \\[time\\]\\.\\[Month Name\\]\\.&\\[\\d+\\]\\}.*")) {  
+                                range_filter  =   matcher.group(6).replaceAll(".*\\{\\[time\\]\\.\\[Month Name\\]\\.&\\[(\\d+)\\] : \\[time\\]\\.\\[Month Name\\]\\.&\\[(\\d+)\\]\\}.*","$1 ; $2");//+";"+matcher.group(3);
+                            }
+                            else{
+                                range_filter  = ";";
+                            }
+                            range_filter_t  =   ""; 
+                            term_filter     =   matcher.group(6);//"PublisherID : "+matcher.group(3);//+matcher.group(5);
+                            
+                            
+                            group           =   matcher.group(2);
+                            sorting         =   "";
+                            values           =  matcher.group(4).replace("[Measures].","");
+                            order           =  "";
                                 
-                                range_filter_f  =   matcher.group(2);//+";"+matcher.group(3);
-                                range_filter_t  =   matcher.group(3); 
-                                term_filter     =   "PublisherID : "+matcher.group(4);//+matcher.group(5);
-                                group           =   "";
-                                sorting         =   "";//matcher.group(6);
-                                order           =   "";//matcher.group(7);
-                                values          =   matcher.group(5);
-                            }
-                            else{   
-                                    
-                                if(matcher.group(2).contains("[admedia key]")) { 
-                                    
-                                    groupCount      =   matcher.groupCount();
-                                    
-                                    if(groupCount == 8){
-                                        
-                                        range_filter_f  =   matcher.group(7);
-                                        range_filter_t  =   matcher.group(8);
-                                        term_filter     =   "PublisherID : "+matcher.group(3)+", "+matcher.group(5)+": "+matcher.group(6);  
-                                        group           =   matcher.group(2);
-                                        sorting         =   "";//matcher.group(6);
-                                        order           =   "";//matcher.group(7);
-                                        values          =   matcher.group(4);
-                                    }
-                                    else{
-                                        
-                                        range_filter_f  =   matcher.group(5);
-                                        range_filter_t  =   matcher.group(6);
-                                        term_filter     =   "PublisherID : "+matcher.group(3);
-                                        group           =   matcher.group(2);
-                                        sorting         =   "";//matcher.group(6);
-                                        order           =   "";//matcher.group(7);
-                                        values          =   matcher.group(4);
-                                    }
-                                }
-                                else{
-                                    //hier muss noch ein group count her... weil manchmal ein timekey im query ist order zwei
-                                    groupCount      =   matcher.groupCount();
-                                    
-                                    if(groupCount == 5){
-                                        
-                                        range_filter_f  =   matcher.group(5);
-                                        range_filter_t  =   "";
-                                        term_filter     =   "PublisherID : "+matcher.group(3);
-                                        group           =   matcher.group(2);
-                                        sorting         =   "";//matcher.group(6);
-                                        order           =   "";//matcher.group(7);
-                                        values          =   matcher.group(4);
-                                    }
-                                    else{
-                                        range_filter_f  =   "";
-                                        range_filter_t  =   "";
-                                        term_filter     =   "PublisherID : "+matcher.group(3);
-                                        group           =   matcher.group(2);
-                                        sorting         =   "";//matcher.group(6);
-                                        order           =   "";//matcher.group(7);
-                                        values          =   matcher.group(4);
-                                    }
-                                }
-                            }
-//                            
-                            input   =   "CUBE;"+timestamp+";"+range_filter_f+";"+range_filter_t+";"+term_filter+";"+group+";"+sorting+";"+order+";'"+values+"'";
+                            input   =   "CUBE;"+timestamp+";"+range_filter+""+range_filter_t+";"+term_filter+";"+group+";"+sorting+";"+order+";'"+values+"'";
                             
-//                            System.out.println(input);
                             output.println(input); 
-                            
+//                            
                         }
                         else{
                             
-                            if(check != i && x == 0){
-                                System.out.println(check +"  "+i+" "+x);
-                                x   =   1;
-                                reg_output.println(sCurrentLine);
-                            }
+                            reg_output.println(sCurrentLine);
+//                          
                         }
                     }
                 }
