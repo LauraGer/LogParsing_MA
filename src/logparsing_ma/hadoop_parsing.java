@@ -43,9 +43,8 @@ class hadoop_parsing {
             ,   input
             ;
         
-        int     i       =   0
-            ,   count   =   0
-            ;
+        int i       =   0;
+        int count   =   0;
         
         LineNumberReader  lnr = new LineNumberReader(new FileReader(new File(FILE)));
         lnr.skip(Long.MAX_VALUE);
@@ -67,13 +66,13 @@ class hadoop_parsing {
                     
                     System.out.println(i+" von "+countLines);
                     
-                    if((sCurrentLine.contains("WQuery")) ) {
+                    if ((sCurrentLine.contains("WQuery"))) {
                         
                         for (Pattern pattern : PATTERNS) {
                         
                         Matcher matcher = pattern.matcher(sCurrentLine);
                         
-                            if (matcher.matches()){
+                            if (matcher.matches()) {
 
                                
                             // Wenn pattern nicht gefunden, dann sysoutprtln (um neues regex zu bauen)
@@ -86,15 +85,16 @@ class hadoop_parsing {
                                 Matcher find_matcher = find_pattern.matcher(matcher.group(2));
                                 
                                 count = 0;
-                                while (find_matcher.find()){
+                                
+                                while (find_matcher.find()) {
                                    count++;
                                 }
-                                System.out.println(count+"   "+matcher.group(2));
-                                if(count == 2){
-                                    term_filter     =   matcher.group(2).replaceAll(".*WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\)\\],.+WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\).*", "$1 : $2, $3 : $4");
+                                
+                                if (count == 2) {
+                                    term_filter     =   matcher.group(2).replaceAll(".*WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\)\\],.+WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\).*", "$1 : $2 - $3 : $4");
                                 }
-                                else if(count == 3){
-                                    term_filter     =   matcher.group(2).replaceAll(".*WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\)\\],.+WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\)\\],.+WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\).*", "$1 : $2, $3 : $4, $5 : $6");
+                                else if (count == 3) {
+                                    term_filter     =   matcher.group(2).replaceAll(".*WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\)\\],.+WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\)\\],.+WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\).*", "$1 : $2 - $3 : $4 - $5 : $6");
                                 }
                                 else {
                                     term_filter     =   matcher.group(2).replaceAll(".*WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\)(,)*.*", "$1 : $2");
