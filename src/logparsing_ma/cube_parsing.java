@@ -127,6 +127,7 @@ class cube_parsing {
             }
                 
         output.close();
+        reg_output.close();
         System.out.println("Cube done!");
     }
     
