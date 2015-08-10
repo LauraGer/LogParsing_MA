@@ -17,9 +17,10 @@ import static logparsing_ma.cube_parsing.FILE;
  */
 class hadoop_parsing {
 
+    static String SEP = File.separator;
     //(USER_ID|TIME_STAMP|WEBSITE_ID|PROG_ID|TCAT_ID)
-    static String FILE = "/Volumes/HD/htdocs/GitHub/log_stuff/log_hadoop";
-    
+//    static String FILE = "C:"+SEP+"LOGS"+SEP+"FILES"+SEP+"Hadoop_Logs"+SEP+"merge-BOOKING_SEARCH-0
+    static String FILE = SEP + "Volumes" + SEP + "HD" + SEP + "htdocs" + SEP + "GitHub" + SEP + "log_stuff" + SEP + "log_hadoop";
 
     static String[] REGEXS = new String[]{"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}).+\\(Filters \\[\\[(.+)\\]\\]\\).+\\(GroupFields \\[(.+)\\]\\)\\(ValueFields \\[(.+)\\]\\)\\(DistinctFields.+"};
     /*   "(.+) INFO .+ (USER_ID|TIME_STAMP|WEBSITE_ID|PROG_ID|TCAT_ID)\\)\\(Version 7\\)\\(Values \\[(\\d+)\\].+TIME_STAMP\\)\\(Version 7\\)\\(LowerTerm (\\d+)\\)\\(IncludeLower true\\)\\(UpperTerm (\\d+).*\\(GroupFields \\[(.+)\\]\\).*\\(ValueFields \\[(.+).*\\(Sort \\[WSort \\(Version 7\\)\\((.+)([ DESC| ASC])\\)\\]\\)\\(.*"
@@ -52,8 +53,8 @@ class hadoop_parsing {
         int countLines = lnr.getLineNumber() + 1;
         lnr.close();
 
-        PrintWriter output = new PrintWriter("/Volumes/HD/X/LOGS/FINAL_hadoop.csv");
-        PrintWriter reg_output = new PrintWriter("/Volumes/HD/X/LOGS/FINAL_hadoop_NOREGEX.csv");
+        PrintWriter output = new PrintWriter(SEP + "Volumes" + SEP + "HD" + SEP + "X" + SEP + "LOGS" + SEP + "FINAL_hadoop.csv");
+        PrintWriter reg_output = new PrintWriter(SEP + "Volumes" + SEP + "HD" + SEP + "X" + SEP + "LOGS" + SEP + "FINAL_hadoop_NOREGEX.csv");
 
         try (BufferedReader hadoop = new BufferedReader(new FileReader(FILE))) {
             String sCurrentLine;
@@ -96,6 +97,7 @@ class hadoop_parsing {
                             } else {
                                 term_filter = matcher.group(2).replaceAll(".*WTermFilter \\(Field (.+)\\)\\(Version 7\\)\\(Values \\[(.+)\\]\\)(,)*.*", "$1 : $2");
                             }
+                            term_filter = term_filter.replace(":","");
                             group = matcher.group(3);
                             sorting = "";//matcher.group(8);
                             order = "";//matcher.group(9);
@@ -104,8 +106,7 @@ class hadoop_parsing {
                             input = "HADOOP;" + timestamp + ";" + range_filter_f + ";" + range_filter_t + ";" + term_filter + ";" + group + ";" + sorting + ";" + order + ";" + values + "";
 
                             output.println(input);
-                        } 
-                        else {
+                        } else {
                             reg_output.println(sCurrentLine);
                         }
                     }

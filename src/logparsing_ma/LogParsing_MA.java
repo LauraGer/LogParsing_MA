@@ -20,16 +20,9 @@ public class LogParsing_MA {
      */
     public static void main(String[] args) {
         try {
-            // TODO code application logic here
-            
-//            hadoop_parsing.openHadoop();
-//
+            hadoop_parsing.openHadoop();
             awin_parsing.openAwin();
-            
-//            cube_parsing.openCube();
-            
-            
-            
+            cube_parsing.openCube();
         } catch (IOException ex) {
             Logger.getLogger(LogParsing_MA.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -38,6 +31,5 @@ public class LogParsing_MA {
     static Object readFile(String volumesHDhtdocsGitHublog_stufflog_awintxt) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-   
-    
+
 }

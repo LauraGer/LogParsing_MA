@@ -17,8 +17,10 @@ import static logparsing_ma.cube_parsing.FILE;
  */
 class awin_parsing {
 
+    static String SEP = File.separator;
     //(USER_ID|TIME_STAMP|WEBSITE_ID|PROG_ID|TCAT_ID)
-    static String FILE = "/Volumes/HD/X/LOGS/awin_edit.csv";
+//    static String FILE = "C:"+SEP+"LOGS"+SEP+"FINAL"+SEP+"awin_edit.csv";
+    static String FILE = SEP + "Volumes" + SEP + "HD" + SEP + "X" + SEP + "LOGS" + SEP + "awin_edit.csv";
 
     static String[] REGEXS = new String[]{"\".+,\"(\\d{4}-\\d{2}-\\d{2}\\d{2}:\\d{2}:\\d{2})\",\"(\\d{4}-\\d{2}-\\d{2})\",\"(\\d{4}-\\d{2}-\\d{2})\",\"(.+)([DESC|ASC])\",\".+\",.+\"(SELECT.+)FROM.+AND(\\d+)=mem\\.affiliate_id.+\""};//\",\"(.+)([DESC|ASC]).+"};//\",\"[.+.(\\d)|([a-z].[a-z])]\",\"(.+)\",\".+,\"(.+)FROM.*"};
 
@@ -72,13 +74,19 @@ class awin_parsing {
                     if (matcher.matches()) {
 
                         timestamp = matcher.group(1);
-                        range_filter_f = matcher.group(2).replace("-", "");
-                        range_filter_t = matcher.group(3).replace("-", "");
-                        term_filter = "AffiliateID : " + matcher.group(7);
-                        group = matcher.group(4).replace("AS", "").replace("DES", "");
+                        range_filter_f = matcher.group(2)
+                                            .replace("-", "");
+                        range_filter_t = matcher.group(3)
+                                            .replace("-", "");
+                        term_filter = "\"publisher_id  " + matcher
+                                            .group(7);
+                        group = matcher.group(4)
+                                            .replace("AS", "")
+                                            .replace("DES", "");
                         sorting = "";//matcher.group(5);
                         order = "";
-                        values = matcher.group(6).replace("SELECTSQL_CALC_FOUND_ROWS", "");
+                        values = matcher.group(6)
+                                            .replace("SELECTSQL_CALC_FOUND_ROWS", "");
 
                         input = ("'AWIN';" + timestamp + ";" + range_filter_f + ";" + range_filter_t + ";" + term_filter + ";" + group + ";" + sorting + ";" + order + ";" + values + "'");
 
