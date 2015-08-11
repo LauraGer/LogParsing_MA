@@ -20,8 +20,8 @@ public class LogParsing_MA {
      */
     public static void main(String[] args) {
         try {
-            hadoop_parsing.openHadoop();
-            awin_parsing.openAwin();
+//            hadoop_parsing.openHadoop();
+//            awin_parsing.openAwin();
             cube_parsing.openCube();
         } catch (IOException ex) {
             Logger.getLogger(LogParsing_MA.class.getName()).log(Level.SEVERE, null, ex);
